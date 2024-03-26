@@ -10,4 +10,6 @@
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
   </ItemGroup>
 
+  <Import Project="..\src\src.projitems" Label="Shared" />
+
 </Project>

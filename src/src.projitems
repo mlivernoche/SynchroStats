@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>0c83665e-3bda-4fbd-8fef-e090354256e9</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>src</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CardList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\CardGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\CardSearch\CardSearchNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\CardSearch\CardSearchNodeCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\ICardGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\INamedCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\CardOps.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\Filters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\IFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\LinqEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\Transform.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DictionaryWithGeneratedKeys.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzerBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzerComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzerComparisonCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\IHandAnalyzerComparisonCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombination.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombinationFinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombinationNameComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Probability\Calculator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\SmallWorld\ISmallWorldCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\SmallWorld\ISmallWorldTraits.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\SmallWorld\SmallWorldAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\SmallWorld\SmallWorldCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatting\HandAnalyzerComparisonFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatting\IHandAnalyzerComparisonFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatting\NumericalComparisonFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatting\ProbabilityComparisonFormatter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IHandAnalyzerOutputStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IProject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IProjectHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectHandler.cs" />
+  </ItemGroup>
+</Project>

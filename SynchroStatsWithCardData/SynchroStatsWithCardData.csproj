@@ -7,17 +7,19 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<AdditionalFiles Include="CardData\*.json" />
+		<PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
 	</ItemGroup>
 
-  <ItemGroup>
-	  <ProjectReference Include="..\SynchroStats\SynchroStats.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<AdditionalFiles Include="CardData\*.json" />
+	</ItemGroup>
 
   <ItemGroup>
 	  <PackageReference Include="System.Text.Json" Version="8.0.0" />
 	  <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
 	  <ProjectReference Include="..\CardSourceGenerator\CardSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
+
+  <Import Project="..\src\src.projitems" Label="Shared" />
 
 </Project>

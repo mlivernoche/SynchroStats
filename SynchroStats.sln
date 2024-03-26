@@ -9,7 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A93AE05C-CEA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardSourceGenerator", "CardSourceGenerator\CardSourceGenerator.csproj", "{4F3E70B1-B467-4FB8-A8A1-A87BEE6050E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynchroStatsWithCardData", "SynchroStatsWithCardData\SynchroStatsWithCardData.csproj", "{549FCF80-1717-4F3C-8D3E-0CDF393BA306}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SynchroStatsWithCardData", "SynchroStatsWithCardData\SynchroStatsWithCardData.csproj", "{549FCF80-1717-4F3C-8D3E-0CDF393BA306}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "src", "src\src.shproj", "{0C83665E-3BDA-4FBD-8FEF-E090354256E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,8 +39,14 @@ Global
 		{C2D96A3D-8064-4362-ADEC-4B9C39273828} = {A93AE05C-CEA6-463E-87ED-7AC083411424}
 		{4F3E70B1-B467-4FB8-A8A1-A87BEE6050E3} = {A93AE05C-CEA6-463E-87ED-7AC083411424}
 		{549FCF80-1717-4F3C-8D3E-0CDF393BA306} = {A93AE05C-CEA6-463E-87ED-7AC083411424}
+		{0C83665E-3BDA-4FBD-8FEF-E090354256E9} = {A93AE05C-CEA6-463E-87ED-7AC083411424}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FC58ABA-0E9F-4AB8-8E41-CBFDE46DAD14}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\src.projitems*{0c83665e-3bda-4fbd-8fef-e090354256e9}*SharedItemsImports = 13
+		src\src.projitems*{549fcf80-1717-4f3c-8d3e-0cdf393ba306}*SharedItemsImports = 5
+		src\src.projitems*{c2d96a3d-8064-4362-adec-4b9c39273828}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
