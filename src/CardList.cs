@@ -41,6 +41,13 @@ public static class CardList
         return cards.Change(card);
     }
 
+    public static CardList<TCardGroup, TCardGroupName> Change<TCardGroup, TCardGroupName>(this CardList<TCardGroup, TCardGroupName> cards, TCardGroupName name, Func<TCardGroup, TCardGroup> change)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
+    {
+        return cards.Change(name, change);
+    }
+
     public static CardList<T, U> Remove<T, U>(this CardList<T, U> cards, U card)
         where T : ICardGroup<U>
         where U : notnull, IEquatable<U>, IComparable<U>
@@ -171,6 +178,27 @@ public sealed class CardList<T, U> : IReadOnlyCollection<T>
     {
         Cards = new HashSet<T>(cards.Where(static group => group.Size > 0), Comparer.Instance);
         Names = Cards.Select(static group => group.Name).ToList();
+    }
+
+    internal CardList<T, U> Change(U name, Func<T, T> change)
+    {
+        T? oldCard = default;
+        foreach(var card in Cards)
+        {
+            if(card.Name.Equals(name))
+            {
+                oldCard = card;
+                break;
+            }
+        }
+
+        if(oldCard != null)
+        {
+            var chg = change(oldCard);
+            return Change(chg);
+        }
+
+        return this;
     }
 
     internal CardList<T, U> Change(T newValue)
