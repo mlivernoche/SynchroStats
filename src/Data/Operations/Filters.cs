@@ -131,7 +131,7 @@ public static class Filters
         return count;
     }
 
-    public static int CountCardNameInHand<U>(this HandCombination<U> cards, U cardName)
+    public static int CountCopiesOfCardInHand<U>(this HandCombination<U> cards, U cardName)
         where U : notnull, IEquatable<U>, IComparable<U>
     {
         
@@ -148,6 +148,31 @@ public static class Filters
         return 0;
     }
 
+    public static int CountCardNameInHand<U>(this HandCombination<U> cards, U cardName)
+        where U : notnull, IEquatable<U>, IComparable<U>
+    {
+
+        foreach (var card in cards.CardNames)
+        {
+            if (!card.HandName.Equals(cardName))
+            {
+                continue;
+            }
+
+            return 1;
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    /// Counts each individual card names, but not their duplicates. For example, if a card
+    /// name is found two times, that isn't counted as two, but one.
+    /// </summary>
+    /// <typeparam name="U">The card name type.</typeparam>
+    /// <param name="cards">The hand to analyze.</param>
+    /// <param name="cardNames">The cards to look for.</param>
+    /// <returns>The amount of names found (this number does not include duplicates).</returns>
     public static int CountCardNamesInHand<U>(this HandCombination<U> cards, IEnumerable<U> cardNames)
         where U : notnull, IEquatable<U>, IComparable<U>
     {
