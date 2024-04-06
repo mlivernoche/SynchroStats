@@ -175,7 +175,7 @@ public sealed class CardList<T, U> : IReadOnlyCollection<T>
 
     internal CardList<T, U> Change(T newValue)
     {
-        var cards = new HashSet<T>(Cards);
+        var cards = new HashSet<T>(Cards, Comparer.Instance);
 
         // items are compared by U, so this is removing any old
         // item that have the same U as newValue.
