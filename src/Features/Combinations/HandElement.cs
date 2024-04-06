@@ -1,5 +1,8 @@
-﻿namespace SynchroStats.Features.Combinations;
+﻿using System.Diagnostics;
 
+namespace SynchroStats.Features.Combinations;
+
+[DebuggerDisplay("{HandName}: {MinimumSize} // {MaximumSize}")]
 public readonly struct HandElement<T> : IEquatable<HandElement<T>>
     where T : notnull, IEquatable<T>, IComparable<T>
 {
