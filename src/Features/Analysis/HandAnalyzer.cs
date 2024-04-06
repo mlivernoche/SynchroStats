@@ -5,6 +5,7 @@ using SynchroStats.Data;
 using SynchroStats.Data.Operations;
 using SynchroStats.Features.Combinations;
 using SynchroStats.Features.Probability;
+using SynchroStats.Features.Assessment;
 
 namespace SynchroStats.Features.Analysis;
 
@@ -158,6 +159,36 @@ public sealed class HandAnalyzer<TCardGroup, TCardGroupName>
     public double CalculateProbability(IFilter<HandCombination<TCardGroupName>> filter)
     {
         return Calculator.CalculateProbability(CardGroups.Values, filter.GetResults(Combinations), DeckSize, HandSize);
+    }
+
+    public HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment> AssessHands<TAssessment>(Func<HandCombination<TCardGroupName>, TAssessment> filter)
+        where TAssessment : IHandAssessment<TCardGroupName>
+    {
+        var assessments = Combinations.Select(filter).ToList();
+        var includedHands = assessments
+            .Where(static assessment => assessment.Included)
+            .Select(static assessment => assessment.Hand);
+        var prob = Calculator.CalculateProbability(CardGroups.Values, includedHands, DeckSize, HandSize);
+
+        return new HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>(this, prob, assessments);
+    }
+
+    public HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment> AssessHands<TAssessment>(Func<HandCombination<TCardGroupName>, HandAnalyzer<TCardGroup, TCardGroupName>, TAssessment> filter)
+        where TAssessment : IHandAssessment<TCardGroupName>
+    {
+        var assessments = new List<TAssessment>();
+
+        foreach(var hand in Combinations)
+        {
+            assessments.Add(filter(hand, this));
+        }
+
+        var includedHands = assessments
+            .Where(static assessment => assessment.Included)
+            .Select(static assessment => assessment.Hand);
+        var prob = Calculator.CalculateProbability(CardGroups.Values, includedHands, DeckSize, HandSize);
+
+        return new HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>(this, prob, assessments);
     }
 
     public int CountHands(Func<HandCombination<TCardGroupName>, bool> filter)

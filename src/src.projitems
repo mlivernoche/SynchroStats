@@ -26,6 +26,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzerComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzerComparisonCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\IHandAnalyzerComparisonCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\HandAssessmentAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\IHandAssessment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombination.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombinationFinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombinationNameComparer.cs" />
