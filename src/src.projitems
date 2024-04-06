@@ -6,7 +6,7 @@
     <SharedGUID>0c83665e-3bda-4fbd-8fef-e090354256e9</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>src</Import_RootNamespace>
+    <Import_RootNamespace>SynchroStats</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CardList.cs" />
