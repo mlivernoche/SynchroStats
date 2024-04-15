@@ -4,24 +4,24 @@ namespace SynchroStats.Data.CardSearch;
 
 public static class CardSearchNode
 {
-    public static CardSearchNode<TName>? CreateSearchGraph<TName>(IEnumerable<TName> names)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static CardSearchNode<TCardGroupName>? CreateSearchGraph<TCardGroupName>(IEnumerable<TCardGroupName> names)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        static CardSearchNode<TName>? CreateGraph(int currentNode, TName[] cardNames)
+        static CardSearchNode<TCardGroupName>? CreateGraph(int currentNode, TCardGroupName[] cardNames)
         {
             if (currentNode == cardNames.Length)
             {
                 return null;
             }
 
-            return new CardSearchNode<TName>(cardNames[currentNode], CreateGraph(currentNode + 1, cardNames));
+            return new CardSearchNode<TCardGroupName>(cardNames[currentNode], CreateGraph(currentNode + 1, cardNames));
         }
 
         return CreateGraph(0, names.ToArray());
     }
 
-    public static CardSearchNode<TName> GetLastNode<TName>(this CardSearchNode<TName> node)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static CardSearchNode<TCardGroupName> GetLastNode<TCardGroupName>(this CardSearchNode<TCardGroupName> node)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         while(node.Next != null)
         {
@@ -33,13 +33,13 @@ public static class CardSearchNode
 }
 
 [DebuggerDisplay("{Name} -> {Next}")]
-public class CardSearchNode<TName>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+public class CardSearchNode<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    public TName Name { get; }
-    public CardSearchNode<TName>? Next { get; }
+    public TCardGroupName Name { get; }
+    public CardSearchNode<TCardGroupName>? Next { get; }
 
-    public CardSearchNode(TName name, CardSearchNode<TName>? next)
+    public CardSearchNode(TCardGroupName name, CardSearchNode<TCardGroupName>? next)
     {
         Name = name;
         Next = next;

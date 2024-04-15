@@ -2,10 +2,10 @@
 
 public static class CardGroup
 {
-    public static CardGroup<TName> Create<TName>(TName name, int size, int minimum, int maximum)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static CardGroup<TCardGroupName> Create<TCardGroupName>(TCardGroupName name, int size, int minimum, int maximum)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        return new CardGroup<TName>()
+        return new CardGroup<TCardGroupName>()
         {
             Name = name,
             Size = size,
@@ -15,17 +15,17 @@ public static class CardGroup
     }
 }
 
-public class CardGroup<TName> : ICardGroup<TName>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+public class CardGroup<TCardGroupName> : ICardGroup<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    public required TName Name { get; init; }
+    public required TCardGroupName Name { get; init; }
     public required int Size { get; init; }
     public required int Minimum { get; init; }
     public required int Maximum { get; init; }
 
     public CardGroup() { }
 
-    public CardGroup(TName name, int size, int minimum, int maximum)
+    public CardGroup(TCardGroupName name, int size, int minimum, int maximum)
     {
         Name = name;
         Size = size;
@@ -33,7 +33,7 @@ public class CardGroup<TName> : ICardGroup<TName>
         Maximum = maximum;
     }
 
-    public CardGroup(TName name)
+    public CardGroup(TCardGroupName name)
     {
         Name = name;
     }

@@ -2,19 +2,19 @@
 
 namespace SynchroStats.Features.Combinations;
 
-internal sealed class HandCombinationNameComparer<T> : IEqualityComparer<HandElement<T>>
-    where T : notnull, IEquatable<T>, IComparable<T>
+internal sealed class HandCombinationNameComparer<TCardGroupName> : IEqualityComparer<HandElement<TCardGroupName>>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    public static IEqualityComparer<HandElement<T>> Default { get; } = new HandCombinationNameComparer<T>();
+    public static IEqualityComparer<HandElement<TCardGroupName>> Default { get; } = new HandCombinationNameComparer<TCardGroupName>();
 
     private HandCombinationNameComparer() { }
 
-    public bool Equals(HandElement<T> x, HandElement<T> y)
+    public bool Equals(HandElement<TCardGroupName> x, HandElement<TCardGroupName> y)
     {
         return x.HandName.Equals(y.HandName);
     }
 
-    public int GetHashCode([DisallowNull] HandElement<T> obj)
+    public int GetHashCode([DisallowNull] HandElement<TCardGroupName> obj)
     {
         return HashCode.Combine(obj.HandName);
     }

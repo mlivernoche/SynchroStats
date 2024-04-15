@@ -4,14 +4,14 @@ namespace SynchroStats.Features.SmallWorld;
 
 public static class SmallWorldAnalyzer
 {
-    public static SmallWorldAnalyzer<TName> Create<TName>(IEnumerable<ISmallWorldCard<TName>> cards)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static SmallWorldAnalyzer<TCardGroupName> Create<TCardGroupName>(IEnumerable<ISmallWorldCard<TCardGroupName>> cards)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        return new SmallWorldAnalyzer<TName>(cards);
+        return new SmallWorldAnalyzer<TCardGroupName>(cards);
     }
 
-    public static bool IsBridgeWith<TName>(this ISmallWorldCard<TName> first, ISmallWorldCard<TName> second)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static bool IsBridgeWith<TCardGroupName>(this ISmallWorldCard<TCardGroupName> first, ISmallWorldCard<TCardGroupName> second)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         if(first.SmallWorldTraits is null)
         {
@@ -63,47 +63,47 @@ public static class SmallWorldAnalyzer
     }
 }
 
-public sealed class SmallWorldAnalyzer<TName>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+public sealed class SmallWorldAnalyzer<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    private DictionaryWithGeneratedKeys<TName, ISmallWorldCard<TName>> Cards { get; }
-    public SmallWorldCollection<int, TName> ByLevel { get; }
-    public SmallWorldCollection<int, TName> ByAttackPoints { get; }
-    public SmallWorldCollection<int, TName> ByDefensePoints { get; }
-    public SmallWorldCollection<string, TName> ByMonsterType { get; }
-    public SmallWorldCollection<string, TName> ByMonsterAttribute { get; }
+    private DictionaryWithGeneratedKeys<TCardGroupName, ISmallWorldCard<TCardGroupName>> Cards { get; }
+    public SmallWorldCollection<int, TCardGroupName> ByLevel { get; }
+    public SmallWorldCollection<int, TCardGroupName> ByAttackPoints { get; }
+    public SmallWorldCollection<int, TCardGroupName> ByDefensePoints { get; }
+    public SmallWorldCollection<string, TCardGroupName> ByMonsterType { get; }
+    public SmallWorldCollection<string, TCardGroupName> ByMonsterAttribute { get; }
 
-    public SmallWorldAnalyzer(IEnumerable<ISmallWorldCard<TName>> cards)
+    public SmallWorldAnalyzer(IEnumerable<ISmallWorldCard<TCardGroupName>> cards)
     {
-        Cards = new DictionaryWithGeneratedKeys<TName, ISmallWorldCard<TName>>(static card => card.Name, cards);
+        Cards = new DictionaryWithGeneratedKeys<TCardGroupName, ISmallWorldCard<TCardGroupName>>(static card => card.Name, cards);
 
-        ByLevel = new SmallWorldCollection<int, TName>(static card => card.Level, cards);
-        ByAttackPoints = new SmallWorldCollection<int, TName>(static card => card.AttackPoints, cards);
-        ByDefensePoints = new SmallWorldCollection<int, TName>(static card => card.DefensePoints, cards);
-        ByMonsterType = new SmallWorldCollection<string, TName>(static card => card.MonsterType, cards);
-        ByMonsterAttribute = new SmallWorldCollection<string, TName>(static card => card.MonsterAttribute, cards);
+        ByLevel = new SmallWorldCollection<int, TCardGroupName>(static card => card.Level, cards);
+        ByAttackPoints = new SmallWorldCollection<int, TCardGroupName>(static card => card.AttackPoints, cards);
+        ByDefensePoints = new SmallWorldCollection<int, TCardGroupName>(static card => card.DefensePoints, cards);
+        ByMonsterType = new SmallWorldCollection<string, TCardGroupName>(static card => card.MonsterType, cards);
+        ByMonsterAttribute = new SmallWorldCollection<string, TCardGroupName>(static card => card.MonsterAttribute, cards);
     }
 
-    public IReadOnlyDictionary<TName, ISmallWorldCard<TName>> FindBridges(TName revealedCardName, TName desiredCardName)
+    public IReadOnlyDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>> FindBridges(TCardGroupName revealedCardName, TCardGroupName desiredCardName)
     {
-        if(Cards.TryGetValue(revealedCardName) is not (true, ISmallWorldCard<TName> revealedCard))
+        if(Cards.TryGetValue(revealedCardName) is not (true, ISmallWorldCard<TCardGroupName> revealedCard))
         {
-            return ImmutableDictionary<TName, ISmallWorldCard<TName>>.Empty;
+            return ImmutableDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>>.Empty;
         }
 
-        if (Cards.TryGetValue(desiredCardName) is not (true, ISmallWorldCard<TName> desiredCard))
+        if (Cards.TryGetValue(desiredCardName) is not (true, ISmallWorldCard<TCardGroupName> desiredCard))
         {
-            return ImmutableDictionary<TName, ISmallWorldCard<TName>>.Empty;
+            return ImmutableDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>>.Empty;
         }
 
         return FindBridges(revealedCard, desiredCard);
     }
 
-    public IReadOnlyDictionary<TName, ISmallWorldCard<TName>> FindBridges(ISmallWorldCard<TName> revealedCard, ISmallWorldCard<TName> desiredCard)
+    public IReadOnlyDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>> FindBridges(ISmallWorldCard<TCardGroupName> revealedCard, ISmallWorldCard<TCardGroupName> desiredCard)
     {
-        var dict = new DictionaryWithGeneratedKeys<TName, ISmallWorldCard<TName>>(static card => card.Name);
+        var dict = new DictionaryWithGeneratedKeys<TCardGroupName, ISmallWorldCard<TCardGroupName>>(static card => card.Name);
 
-        void SearchForBridges<TSmallWorldValue>(SmallWorldCollection<TSmallWorldValue, TName> collection)
+        void SearchForBridges<TSmallWorldValue>(SmallWorldCollection<TSmallWorldValue, TCardGroupName> collection)
             where TSmallWorldValue : IEquatable<TSmallWorldValue>, IComparable<TSmallWorldValue>
         {
             foreach(var (name, possibleBridge) in collection.GetCardsBySmallWorldValue(revealedCard))
@@ -124,14 +124,14 @@ public sealed class SmallWorldAnalyzer<TName>
         return dict;
     }
 
-    public bool HasBridge(TName revealedCardName, TName desiredCardName)
+    public bool HasBridge(TCardGroupName revealedCardName, TCardGroupName desiredCardName)
     {
-        if (Cards.TryGetValue(revealedCardName) is not (true, ISmallWorldCard<TName> revealedCard))
+        if (Cards.TryGetValue(revealedCardName) is not (true, ISmallWorldCard<TCardGroupName> revealedCard))
         {
             return false;
         }
 
-        if (Cards.TryGetValue(desiredCardName) is not (true, ISmallWorldCard<TName> desiredCard))
+        if (Cards.TryGetValue(desiredCardName) is not (true, ISmallWorldCard<TCardGroupName> desiredCard))
         {
             return false;
         }
@@ -139,9 +139,9 @@ public sealed class SmallWorldAnalyzer<TName>
         return HasBridge(revealedCard, desiredCard);
     }
 
-    public bool HasBridge(ISmallWorldCard<TName> revealedCard, ISmallWorldCard<TName> desiredCard)
+    public bool HasBridge(ISmallWorldCard<TCardGroupName> revealedCard, ISmallWorldCard<TCardGroupName> desiredCard)
     {
-        bool SearchForBridge<TSmallWorldValue>(SmallWorldCollection<TSmallWorldValue, TName> collection)
+        bool SearchForBridge<TSmallWorldValue>(SmallWorldCollection<TSmallWorldValue, TCardGroupName> collection)
             where TSmallWorldValue : IEquatable<TSmallWorldValue>, IComparable<TSmallWorldValue>
         {
             foreach (var (name, possibleBridge) in collection.GetCardsBySmallWorldValue(revealedCard))
