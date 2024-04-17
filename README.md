@@ -1,11 +1,12 @@
 # SynchroStats
 
-SynchroStats is a framework written in C# for building empirical and statistical models that aim to optimize the opening hand of a Yu-Gi-Oh! deck. This framework allows for an analysis that is more detailed, automated, and correct.
+SynchroStats is a framework written in C# for building probability models that aim to optimize the opening hand of a Yu-Gi-Oh! deck. This framework allows for an analysis that is more detailed, automated, and correct.
 
 * [SynchroStats](#synchrostats)
-  * [Detailed](#detailed)
-  * [Automated](#automated)
-  * [Correct](#correct)
+  * [A Brief Introduction](#a-brief-introduction)
+  * [More Detailed Models](#more-detailed-models)
+  * [More Automated Models](#more-automated-models)
+  * [More Correct Models](#more-correct-models)
 * [Card Mechanics](#card-mechanics)
   * [Small World](#small-world)
   * [Pot of Prosperity](#pot-of-prosperity)
@@ -13,7 +14,40 @@ SynchroStats is a framework written in C# for building empirical and statistical
   * [Installation](#installation)
   * [Getting Started](#getting-started)
 
-## Detailed
+## A Brief Introduction
+
+There are two important components in order to use this framework.
+
+* `CardList<TCardGroup, TCardGroupName>`: this class is an immutable collection of the cards in a deck list. These cards can be the actual cards used in the deck (e.g., `Pressured Planet Wraitsoth`), or they can be a bunch of cards clumped into a category (e.g., `One Card Starter`). This class is immutable, because it allows models to create and modify card lists without changing the original.
+* `HandAnalyzer<TCardGroup, TCardGroupName>`: this class is used to create models. There are three parameters needed to create an instance of this class: a `string` Name, an `int` opening hand size, and the `CardList<TCardGroup, TCardGroupName>` card/deck list. When this class is being created, a collection is created containing **all possible hands that can be created by the card/deck list**.
+
+Once a hand analyzer can be created, there are two ways to model the probability of an opening hand.
+
+### Filtering Hands
+
+This is the easier of the two, and it simply involves providing a predicate to a set of extension methods. These extension methods use the predicate to determine whether or not a hand is a desirable opening hand. They then return the probability of opening any of those desirable hands. Here is an example.
+
+```
+// Create the card list.
+var cardList = CardList.Create(...);
+
+// Create the parameters for a hand analyzer.
+var handAnalyzerArgs = HandAnalyzerBuildArguments.Create("My Analyzer", 5, cardList);
+
+// Create a hand analyzer.
+var handAnalyzer = HandAnalyzer.Create(handAnalyzerArgs);
+
+// Calculate the probability of drawing Kashtira Unicorn.
+var kashUnicornProb = handAnalyzer.CalculateProbability(static hand => hand.HasThisCard(YGOCards.C_KashtiraUnicorn))
+```
+
+### Assessing Hands
+
+**Hand Assessments** is the more powerful version, but it works similar. Instead of returning a `bool`, they instead return whatever type `T` you want that implements `IHandAssessment<TCardGroupName>`. You can then include more information in this type `T` then a simple `bool`. This requires more knowledge on how the deck being modeled works, but an example would be if the hand has full combo with a 1 card starter vs a 2 card starter.
+
+Now, on to more advanced scenarios.
+
+## More Detailed Models
 
 Using this framework, it is possible to distinguish cards in a much more useful manner. A common use case is calculating the probability for drawing a starter card.
 
@@ -84,7 +118,7 @@ These two examples uses the `IHandAssessment<TCardGroupName>` system (see [src/F
 
 It is also possible to look at hands on the opposite end: when the deck produces a hand that does not produce full combo, what does the hand look it? Does it have 1 hand trap and 4 garnets? Does it have 4 hand traps and 1 garnet? Does it have 4 hand traps, but 3 of them are the same card and that card has a hard once per turn and so it really only has 2 hand traps? How often do these hands happen?
 
-## Automated
+## More Automated Models
 
 ### Generating Models
 Another common use case is determing how many hand traps or board breakers (sometimes called "non-engine") to run. It is very easy to create a function that automatically checks a range of quantities for non-engine for both going first and going second. It would look something like this ([file](https://github.com/mlivernoche/VaylantzHandAnalysis/blob/3a8ef2fdb2b7b5920d89f31075c4c25a8b0ede4c/VaylantzHandAnalysis/Projects/GenericProbabilityProject.cs#L15)):
@@ -204,7 +238,7 @@ foreach (var card in possibleHand.GetCardsInHand(analyzer))
 
 By using this method, we add more searchers without having to update each model.
 
-## Correct
+## More Correct Models
 
 A common issue in programming is typos. This can be a problem when dealing with a cardpool as vast as Yu-Gi-Oh!. To help mitigate this, SynchroStats allows more than strings to identify cards.
 
