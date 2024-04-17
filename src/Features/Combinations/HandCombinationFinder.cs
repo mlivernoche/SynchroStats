@@ -5,13 +5,13 @@ namespace SynchroStats.Features.Combinations;
 
 internal static class HandCombinationFinder
 {
-    private sealed class HandStackWithSizeCounter<T>
-        where T : notnull, IEquatable<T>, IComparable<T>
+    private sealed class HandStackWithSizeCounter<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         private int Size;
-        private readonly Stack<HandElement<T>> Storage = new(128);
+        private readonly Stack<HandElement<TCardGroupName>> Storage = new(128);
 
-        public HandElement<T>[] GetHandPermutations()
+        public HandElement<TCardGroupName>[] GetHandPermutations()
         {
             return Storage.ToArray();
         }
@@ -21,26 +21,26 @@ internal static class HandCombinationFinder
             return Size;
         }
 
-        public HandElement<T> Pop()
+        public HandElement<TCardGroupName> Pop()
         {
             var pop = Storage.Pop();
             Size -= pop.MinimumSize;
             return pop;
         }
 
-        public void Push(HandElement<T> handPermutation)
+        public void Push(HandElement<TCardGroupName> handPermutation)
         {
             Size += handPermutation.MinimumSize;
             Storage.Push(handPermutation);
         }
     }
 
-    internal static IImmutableSet<HandCombination<U>> GetCombinations<T, U>(int startingHandSize, IEnumerable<T> cardGroups)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    internal static IImmutableSet<HandCombination<TCardGroupName>> GetCombinations<TCardGroup, TCardGroupName>(int startingHandSize, IEnumerable<TCardGroup> cardGroups)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         var hand = cardGroups
-                .Select(static group => new HandElement<U>
+                .Select(static group => new HandElement<TCardGroupName>
                 {
                     HandName = group.Name,
                     MinimumSize = group.Minimum,
@@ -51,16 +51,16 @@ internal static class HandCombinationFinder
         return GetCombinations(startingHandSize, hand);
     }
 
-    internal static IImmutableSet<HandCombination<T>> GetCombinations<T>(int startingHandSize, IEnumerable<HandElement<T>> cardGroups)
-        where T : notnull, IEquatable<T>, IComparable<T>
+    internal static IImmutableSet<HandCombination<TCardGroupName>> GetCombinations<TCardGroupName>(int startingHandSize, IEnumerable<HandElement<TCardGroupName>> cardGroups)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         return GetCombinations(startingHandSize, cardGroups.ToHashSet());
     }
 
-    private static ImmutableHashSet<HandCombination<T>> GetCombinations<T>(int startingHandSize, HashSet<HandElement<T>> cardGroups)
-        where T : notnull, IEquatable<T>, IComparable<T>
+    private static ImmutableHashSet<HandCombination<TCardGroupName>> GetCombinations<TCardGroupName>(int startingHandSize, HashSet<HandElement<TCardGroupName>> cardGroups)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        static void Recursive(int startingHandSize, HandStackWithSizeCounter<T> hand, List<HandElement<T>[]> storage, Stack<HandElement<T>> start)
+        static void Recursive(int startingHandSize, HandStackWithSizeCounter<TCardGroupName> hand, List<HandElement<TCardGroupName>[]> storage, Stack<HandElement<TCardGroupName>> start)
         {
             if (start.Count == 0)
             {
@@ -77,7 +77,7 @@ internal static class HandCombinationFinder
 
             for (var i = group.MinimumSize; i <= group.MaximumSize; i++)
             {
-                hand.Push(new HandElement<T>()
+                hand.Push(new HandElement<TCardGroupName>()
                 {
                     HandName = group.HandName,
                     MinimumSize = i,
@@ -92,13 +92,13 @@ internal static class HandCombinationFinder
             start.Push(group);
         }
 
-        var permutations = new List<HandElement<T>[]>(32768);
-        var stack = new HandStackWithSizeCounter<T>();
-        var start = new Stack<HandElement<T>>(cardGroups);
+        var permutations = new List<HandElement<TCardGroupName>[]>(32768);
+        var stack = new HandStackWithSizeCounter<TCardGroupName>();
+        var start = new Stack<HandElement<TCardGroupName>>(cardGroups);
         Recursive(startingHandSize, stack, permutations, start);
 
         var emptyHand = cardGroups
-            .Select(static permutation => new HandElement<T>
+            .Select(static permutation => new HandElement<TCardGroupName>
             {
                 HandName = permutation.HandName,
                 MinimumSize = 0,
@@ -106,16 +106,16 @@ internal static class HandCombinationFinder
             })
             .ToHashSet();
 
-        var completeSet = new List<HandCombination<T>>();
+        var completeSet = new List<HandCombination<TCardGroupName>>();
 
         foreach (var handPermutation in permutations)
         {
-            var handWithEmpties = new HashSet<HandElement<T>>(handPermutation, HandCombinationNameComparer<T>.Default);
+            var handWithEmpties = new HashSet<HandElement<TCardGroupName>>(handPermutation, HandCombinationNameComparer<TCardGroupName>.Default);
             handWithEmpties.UnionWith(emptyHand);
 
-            completeSet.Add(new HandCombination<T>(handWithEmpties));
+            completeSet.Add(new HandCombination<TCardGroupName>(handWithEmpties));
         }
 
-        return completeSet.ToImmutableHashSet();
+        return [.. completeSet];
     }
 }

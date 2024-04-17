@@ -2,8 +2,8 @@
 
 namespace SynchroStats.Features.SmallWorld;
 
-public interface ISmallWorldCard<TName> : INamedCard<TName>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+public interface ISmallWorldCard<TCardGroupName> : INamedCard<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
     ISmallWorldTraits? SmallWorldTraits { get; }
 }

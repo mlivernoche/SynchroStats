@@ -6,23 +6,23 @@ namespace SynchroStats.Features.Probability;
 
 public static class Calculator
 {
-    internal static double CalculateProbability<T, U>(IEnumerable<T> cardGroups, IEnumerable<HandCombination<U>> handCombinations, int deckSize, int handSize)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    internal static double CalculateProbability<TCardGroup, TCardGroupName>(IEnumerable<TCardGroup> cardGroups, IEnumerable<HandCombination<TCardGroupName>> handCombinations, int deckSize, int handSize)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        return CalculateProbability(cardGroups, new HashSet<HandCombination<U>>(handCombinations), deckSize, handSize);
+        return CalculateProbability(cardGroups, new HashSet<HandCombination<TCardGroupName>>(handCombinations), deckSize, handSize);
     }
 
-    internal static double CalculateProbability<T, U>(IEnumerable<T> cardGroups, IReadOnlyCollection<HandCombination<U>> handCombinations, int deckSize, int handSize)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    internal static double CalculateProbability<TCardGroup, TCardGroupName>(IEnumerable<TCardGroup> cardGroups, IReadOnlyCollection<HandCombination<TCardGroupName>> handCombinations, int deckSize, int handSize)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        var cardGroupByName = new DictionaryWithGeneratedKeys<U, T>(static group => group.Name, cardGroups);
+        var cardGroupByName = new DictionaryWithGeneratedKeys<TCardGroupName, TCardGroup>(static group => group.Name, cardGroups);
         var totalProb = 0.0;
 
         foreach (var handPermutation in handCombinations)
         {
-            var currentCardGroup = new List<ICardGroup<U>>(handPermutation.CardNames.Count);
+            var currentCardGroup = new List<ICardGroup<TCardGroupName>>(handPermutation.CardNames.Count);
 
             foreach (var cardGroup in handPermutation.CardNames)
             {
@@ -31,7 +31,7 @@ public static class Calculator
                     throw new Exception();
                 }
 
-                currentCardGroup.Add(new CardGroup<U>
+                currentCardGroup.Add(new CardGroup<TCardGroupName>
                 {
                     Name = originalCardGroup.Name,
                     Size = originalCardGroup.Size,
@@ -40,19 +40,19 @@ public static class Calculator
                 });
             }
 
-            var prob = Calculate<ICardGroup<U>, U>(currentCardGroup, deckSize, handSize);
+            var prob = Calculate<ICardGroup<TCardGroupName>, TCardGroupName>(currentCardGroup, deckSize, handSize);
             totalProb += prob;
         }
 
         return totalProb;
     }
 
-    internal static double CalculateProbability<T, U>(IEnumerable<T> cardGroups, HandCombination<U> handPermutation, int deckSize, int handSize)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    internal static double CalculateProbability<TCardGroup, TCardGroupName>(IEnumerable<TCardGroup> cardGroups, HandCombination<TCardGroupName> handPermutation, int deckSize, int handSize)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        var cardGroupByName = new DictionaryWithGeneratedKeys<U, T>(static group => group.Name, cardGroups);
-        var currentCardGroup = new List<ICardGroup<U>>(handPermutation.CardNames.Count);
+        var cardGroupByName = new DictionaryWithGeneratedKeys<TCardGroupName, TCardGroup>(static group => group.Name, cardGroups);
+        var currentCardGroup = new List<ICardGroup<TCardGroupName>>(handPermutation.CardNames.Count);
 
         foreach (var cardGroup in handPermutation.CardNames)
         {
@@ -61,7 +61,7 @@ public static class Calculator
                 throw new Exception();
             }
 
-            currentCardGroup.Add(new CardGroup<U>
+            currentCardGroup.Add(new CardGroup<TCardGroupName>
             {
                 Name = cardGroup.HandName,
                 Size = originalCardGroup.Size,
@@ -70,18 +70,18 @@ public static class Calculator
             });
         }
 
-        return Calculate<ICardGroup<U>, U>(currentCardGroup, deckSize, handSize);
+        return Calculate<ICardGroup<TCardGroupName>, TCardGroupName>(currentCardGroup, deckSize, handSize);
     }
 
-    private static double Calculate<T, U>(IEnumerable<T> cardGroups, int deckSize, int handSize)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    private static double Calculate<TCardGroup, TCardGroupName>(IEnumerable<TCardGroup> cardGroups, int deckSize, int handSize)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        Validation<T, U>(cardGroups, deckSize, handSize);
+        Validation<TCardGroup, TCardGroupName>(cardGroups, deckSize, handSize);
 
-        var stack = new Stack<T>(cardGroups);
+        var stack = new Stack<TCardGroup>(cardGroups);
 
-        var top = CalculateProbabilityOfHand<T, U>(handSize, stack);
+        var top = CalculateProbabilityOfHand<TCardGroup, TCardGroupName>(handSize, stack);
         var bottom = new CardChance()
         {
             N = deckSize,
@@ -90,9 +90,9 @@ public static class Calculator
         return top / bottom;
     }
 
-    private static void Validation<T, U>(IEnumerable<T> cardGroups, int deckSize, int handSize)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    private static void Validation<TCardGroup, TCardGroupName>(IEnumerable<TCardGroup> cardGroups, int deckSize, int handSize)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         {
             var groupSize = cardGroups.Sum(static group => group.Size);
@@ -124,11 +124,11 @@ public static class Calculator
         }
     }
 
-    private static double CalculateProbabilityOfHand<T, U>(int maxHandSize, Stack<T> cardGroups)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    private static double CalculateProbabilityOfHand<TCardGroup, TCardGroupName>(int maxHandSize, Stack<TCardGroup> cardGroups)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        static double Impl(Stack<CardChance> hand, int currentHandSize, int maxHandSize, Stack<T> cardGroups)
+        static double Impl(Stack<CardChance> hand, int currentHandSize, int maxHandSize, Stack<TCardGroup> cardGroups)
         {
             if (cardGroups.Count == 0 || currentHandSize >= maxHandSize)
             {

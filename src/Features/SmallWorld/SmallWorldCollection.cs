@@ -2,17 +2,17 @@
 
 namespace SynchroStats.Features.SmallWorld;
 
-public sealed class SmallWorldCollection<TSmallWorldValue, TName>
+public sealed class SmallWorldCollection<TSmallWorldValue, TCardGroupName>
     where TSmallWorldValue : IEquatable<TSmallWorldValue>, IComparable<TSmallWorldValue>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
     private Func<ISmallWorldTraits, TSmallWorldValue> ValueSelector { get; }
-    private Dictionary<TSmallWorldValue, DictionaryWithGeneratedKeys<TName, ISmallWorldCard<TName>>> Cards { get; }
+    private Dictionary<TSmallWorldValue, DictionaryWithGeneratedKeys<TCardGroupName, ISmallWorldCard<TCardGroupName>>> Cards { get; }
 
-    public SmallWorldCollection(Func<ISmallWorldTraits, TSmallWorldValue> selector, IEnumerable<ISmallWorldCard<TName>> cards)
+    public SmallWorldCollection(Func<ISmallWorldTraits, TSmallWorldValue> selector, IEnumerable<ISmallWorldCard<TCardGroupName>> cards)
     {
         ValueSelector = selector;
-        Cards = new Dictionary<TSmallWorldValue, DictionaryWithGeneratedKeys<TName, ISmallWorldCard<TName>>>();
+        Cards = new Dictionary<TSmallWorldValue, DictionaryWithGeneratedKeys<TCardGroupName, ISmallWorldCard<TCardGroupName>>>();
 
         foreach (var card in cards)
         {
@@ -27,7 +27,7 @@ public sealed class SmallWorldCollection<TSmallWorldValue, TName>
 
             if (!Cards.TryGetValue(value, out var collection))
             {
-                collection = new DictionaryWithGeneratedKeys<TName, ISmallWorldCard<TName>>(static card => card.Name);
+                collection = new DictionaryWithGeneratedKeys<TCardGroupName, ISmallWorldCard<TCardGroupName>>(static card => card.Name);
                 Cards[value] = collection;
             }
 
@@ -38,29 +38,29 @@ public sealed class SmallWorldCollection<TSmallWorldValue, TName>
         }
     }
 
-    public IReadOnlyDictionary<TName, ISmallWorldCard<TName>> GetCardsBySmallWorldValue(ISmallWorldCard<TName> card)
+    public IReadOnlyDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>> GetCardsBySmallWorldValue(ISmallWorldCard<TCardGroupName> card)
     {
         var traits = card.SmallWorldTraits;
 
         if (traits is null)
         {
-            return ImmutableDictionary<TName, ISmallWorldCard<TName>>.Empty;
+            return ImmutableDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>>.Empty;
         }
 
         return GetCardsBySmallWorldValue(ValueSelector(traits));
     }
 
-    public IReadOnlyDictionary<TName, ISmallWorldCard<TName>> GetCardsBySmallWorldValue(TSmallWorldValue smallWorldValue)
+    public IReadOnlyDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>> GetCardsBySmallWorldValue(TSmallWorldValue smallWorldValue)
     {
         if (!Cards.TryGetValue(smallWorldValue, out var collection))
         {
-            return ImmutableDictionary<TName, ISmallWorldCard<TName>>.Empty;
+            return ImmutableDictionary<TCardGroupName, ISmallWorldCard<TCardGroupName>>.Empty;
         }
 
         return collection;
     }
 
-    public bool IsCardPresent(ISmallWorldCard<TName> card)
+    public bool IsCardPresent(ISmallWorldCard<TCardGroupName> card)
     {
         var traits = card.SmallWorldTraits;
 
