@@ -4,21 +4,21 @@ namespace SynchroStats.Features.Analysis;
 
 public static class HandAnalyzerBuildArguments
 {
-    public static HandAnalyzerBuildArguments<T, U> Create<T, U>(string analyzerName, int handSize, IReadOnlyCollection<T> cardGroups)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static HandAnalyzerBuildArguments<TCardGroup, TCardGroupName> Create<TCardGroup, TCardGroupName>(string analyzerName, int handSize, IReadOnlyCollection<TCardGroup> cardGroups)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        return new HandAnalyzerBuildArguments<T, U>(analyzerName, handSize, cardGroups);
+        return new HandAnalyzerBuildArguments<TCardGroup, TCardGroupName>(analyzerName, handSize, cardGroups);
     }
 
-    public static HandAnalyzerBuildArguments<T, U> Create<T, U>(string analyzerName, int handSize, CardList<T, U> cardList)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static HandAnalyzerBuildArguments<TCardGroup, TCardGroupName> Create<TCardGroup, TCardGroupName>(string analyzerName, int handSize, CardList<TCardGroup, TCardGroupName> cardList)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        return new HandAnalyzerBuildArguments<T, U>(analyzerName, handSize, cardList);
+        return new HandAnalyzerBuildArguments<TCardGroup, TCardGroupName>(analyzerName, handSize, cardList);
     }
 }
 
-public record HandAnalyzerBuildArguments<T, U>(string AnalyzerName, int HandSize, IReadOnlyCollection<T> CardGroups)
-    where T : ICardGroup<U>
-    where U : notnull, IEquatable<U>, IComparable<U>;
+public record HandAnalyzerBuildArguments<TCardGroup, TCardGroupName>(string AnalyzerName, int HandSize, IReadOnlyCollection<TCardGroup> CardGroups)
+    where TCardGroup : ICardGroup<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>;

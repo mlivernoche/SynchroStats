@@ -8,43 +8,43 @@ namespace SynchroStats.Features.Analysis;
 
 public static class HandAnalyzerComparison
 {
-    public static HandAnalyzerComparison<T, U> Create<T, U>(IEnumerable<HandAnalyzer<T, U>> values)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static HandAnalyzerComparison<TCardGroup, TCardGroupName> Create<TCardGroup, TCardGroupName>(IEnumerable<HandAnalyzer<TCardGroup, TCardGroupName>> values)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        return new HandAnalyzerComparison<T, U>(values);
+        return new HandAnalyzerComparison<TCardGroup, TCardGroupName>(values);
     }
 
-    public static HandAnalyzerComparison<T, U> Run<T, U>(IHandAnalyzerOutputStream outputStream, HandAnalyzerComparison<T, U> comparison, IHandAnalyzerComparisonFormatter<string> handAnalyzerNamesFormatter)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static HandAnalyzerComparison<TCardGroup, TCardGroupName> Run<TCardGroup, TCardGroupName>(IHandAnalyzerOutputStream outputStream, HandAnalyzerComparison<TCardGroup, TCardGroupName> comparison, IHandAnalyzerComparisonFormatter<string> handAnalyzerNamesFormatter)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         comparison.Run(outputStream, handAnalyzerNamesFormatter);
         return comparison;
     }
 
-    public static HandAnalyzerComparison<T, U> RunInParallel<T, U>(IHandAnalyzerOutputStream outputStream, HandAnalyzerComparison<T, U> comparison, IHandAnalyzerComparisonFormatter<string> handAnalyzerNamesFormatter)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static HandAnalyzerComparison<TCardGroup, TCardGroupName> RunInParallel<TCardGroup, TCardGroupName>(IHandAnalyzerOutputStream outputStream, HandAnalyzerComparison<TCardGroup, TCardGroupName> comparison, IHandAnalyzerComparisonFormatter<string> handAnalyzerNamesFormatter)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         comparison.RunInParallel(outputStream, handAnalyzerNamesFormatter);
         return comparison;
     }
 }
 
-public class HandAnalyzerComparison<T, U> : IEnumerable<IHandAnalyzerComparisonCategory<T, U>>
-    where T : ICardGroup<U>
-    where U : notnull, IEquatable<U>, IComparable<U>
+public class HandAnalyzerComparison<TCardGroup, TCardGroupName> : IEnumerable<IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>>
+    where TCardGroup : ICardGroup<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    private List<HandAnalyzer<T, U>> Analyzers { get; } = new();
-    private List<IHandAnalyzerComparisonCategory<T, U>> Categories { get; } = new List<IHandAnalyzerComparisonCategory<T, U>>();
+    private List<HandAnalyzer<TCardGroup, TCardGroupName>> Analyzers { get; } = new();
+    private List<IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>> Categories { get; } = new List<IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>>();
 
-    public HandAnalyzerComparison(IEnumerable<HandAnalyzer<T, U>> analyzers)
+    public HandAnalyzerComparison(IEnumerable<HandAnalyzer<TCardGroup, TCardGroupName>> analyzers)
     {
         Analyzers.AddRange(analyzers);
     }
 
-    public void Add(IHandAnalyzerComparisonCategory<T, U> category)
+    public void Add(IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName> category)
     {
         Categories.Add(category);
     }
@@ -73,7 +73,7 @@ public class HandAnalyzerComparison<T, U> : IEnumerable<IHandAnalyzerComparisonC
 
     public void RunInParallel(IHandAnalyzerOutputStream outputStream, IHandAnalyzerComparisonFormatter<string> handAnalyzerNamesFormatter)
     {
-        var list = new List<(int, IHandAnalyzerComparisonCategory<T, U>)>(Categories.Count);
+        var list = new List<(int, IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>)>(Categories.Count);
 
         {
             int sortId = 0;
@@ -113,9 +113,9 @@ public class HandAnalyzerComparison<T, U> : IEnumerable<IHandAnalyzerComparisonC
         outputStream.Write(sb.ToString());
     }
 
-    public IEnumerator<IHandAnalyzerComparisonCategory<T, U>> GetEnumerator()
+    public IEnumerator<IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>> GetEnumerator()
     {
-        IEnumerable<IHandAnalyzerComparisonCategory<T, U>> enumerable = Categories;
+        IEnumerable<IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>> enumerable = Categories;
         return enumerable.GetEnumerator();
     }
 
