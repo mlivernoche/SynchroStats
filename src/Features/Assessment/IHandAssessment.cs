@@ -1,7 +1,4 @@
 ﻿using SynchroStats.Features.Combinations;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SynchroStats.Features.Assessment;
 
