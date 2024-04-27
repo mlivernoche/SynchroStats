@@ -148,6 +148,19 @@ public static class Filters
         return 0;
     }
 
+    public static int CountCopiesOfCardInHand<U>(this HandCombination<U> cards, IEnumerable<U> cardNames)
+        where U : notnull, IEquatable<U>, IComparable<U>
+    {
+        var total = 0;
+
+        foreach(var card in cardNames)
+        {
+            total += cards.CountCopiesOfCardInHand(card);
+        }
+
+        return total;
+    }
+
     public static int CountCardNameInHand<U>(this HandCombination<U> cards, U cardName)
         where U : notnull, IEquatable<U>, IComparable<U>
     {
