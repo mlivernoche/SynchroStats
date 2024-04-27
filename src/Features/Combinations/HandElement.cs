@@ -3,14 +3,14 @@
 namespace SynchroStats.Features.Combinations;
 
 [DebuggerDisplay("{HandName}: {MinimumSize} // {MaximumSize}")]
-public readonly struct HandElement<T> : IEquatable<HandElement<T>>
-    where T : notnull, IEquatable<T>, IComparable<T>
+public readonly struct HandElement<TCardGroupName> : IEquatable<HandElement<TCardGroupName>>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    public required T HandName { get; init; }
+    public required TCardGroupName HandName { get; init; }
     public required int MinimumSize { get; init; }
     public required int MaximumSize { get; init; }
 
-    public bool Equals(HandElement<T> other)
+    public bool Equals(HandElement<TCardGroupName> other)
     {
         return
             HandName.Equals(other.HandName) &&
@@ -20,15 +20,15 @@ public readonly struct HandElement<T> : IEquatable<HandElement<T>>
 
     public override bool Equals(object? obj)
     {
-        return obj is HandElement<T> other && Equals(other);
+        return obj is HandElement<TCardGroupName> other && Equals(other);
     }
 
-    public static bool operator ==(HandElement<T> left, HandElement<T> right)
+    public static bool operator ==(HandElement<TCardGroupName> left, HandElement<TCardGroupName> right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(HandElement<T> left, HandElement<T> right)
+    public static bool operator !=(HandElement<TCardGroupName> left, HandElement<TCardGroupName> right)
     {
         return !(left == right);
     }

@@ -1,7 +1,7 @@
 ﻿namespace SynchroStats.Data;
 
-public interface INamedCard<TName>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+public interface INamedCard<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    TName Name { get; }
+    TCardGroupName Name { get; }
 }

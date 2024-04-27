@@ -4,16 +4,16 @@ namespace SynchroStats.Data.CardSearch;
 
 public static class CardSearchNodeCollection
 {
-    public static CardSearchNodeCollection<TName> Add<TName>(this CardSearchNodeCollection<TName> collection, IEnumerable<TName> names)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static CardSearchNodeCollection<TCardGroupName> Add<TCardGroupName>(this CardSearchNodeCollection<TCardGroupName> collection, IEnumerable<TCardGroupName> names)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         var graph = CardSearchNode.CreateSearchGraph(names);
         collection.Add(graph);
         return collection;
     }
 
-    public static CardSearchNodeCollection<TName> Add<TName>(this CardSearchNodeCollection<TName> collection, TName start, IEnumerable<TName> directSearches)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static CardSearchNodeCollection<TCardGroupName> Add<TCardGroupName>(this CardSearchNodeCollection<TCardGroupName> collection, TCardGroupName start, IEnumerable<TCardGroupName> directSearches)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         foreach (var direct in directSearches)
         {
@@ -24,8 +24,8 @@ public static class CardSearchNodeCollection
         return collection;
     }
 
-    public static IEnumerable<CardSearchNode<TName>> GetGraphsByName<TName>(this CardSearchNodeCollection<TName> collection, TName name)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static IEnumerable<CardSearchNode<TCardGroupName>> GetGraphsByName<TCardGroupName>(this CardSearchNodeCollection<TCardGroupName> collection, TCardGroupName name)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         foreach(var graph in collection)
         {
@@ -38,8 +38,8 @@ public static class CardSearchNodeCollection
         }
     }
 
-    public static IEnumerable<CardSearchNode<TName>> GetGraphsByEnd<TName>(this CardSearchNodeCollection<TName> collection, TName name)
-        where TName : notnull, IEquatable<TName>, IComparable<TName>
+    public static IEnumerable<CardSearchNode<TCardGroupName>> GetGraphsByEnd<TCardGroupName>(this CardSearchNodeCollection<TCardGroupName> collection, TCardGroupName name)
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         foreach (var graph in collection)
         {
@@ -64,15 +64,15 @@ public static class CardSearchNodeCollection
 /// Diviner of the Herald -> Trias Hierarchia -> DoSolfachord Cutia -> ReSolfachord Dreamia
 /// is also fine.
 /// </summary>
-/// <typeparam name="TName"></typeparam>
-public sealed class CardSearchNodeCollection<TName> : IEnumerable<CardSearchNode<TName>>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+/// <typeparam name="TCardGroupName"></typeparam>
+public sealed class CardSearchNodeCollection<TCardGroupName> : IEnumerable<CardSearchNode<TCardGroupName>>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    private sealed class NodeComparer : IEqualityComparer<CardSearchNode<TName>>
+    private sealed class NodeComparer : IEqualityComparer<CardSearchNode<TCardGroupName>>
     {
-        public static IEqualityComparer<CardSearchNode<TName>> Instance { get; } = new NodeComparer();
+        public static IEqualityComparer<CardSearchNode<TCardGroupName>> Instance { get; } = new NodeComparer();
 
-        private static int GetNodeHashCode(CardSearchNode<TName>? node)
+        private static int GetNodeHashCode(CardSearchNode<TCardGroupName>? node)
         {
             var code = 0;
 
@@ -85,22 +85,22 @@ public sealed class CardSearchNodeCollection<TName> : IEnumerable<CardSearchNode
             return code;
         }
 
-        bool IEqualityComparer<CardSearchNode<TName>>.Equals(CardSearchNode<TName>? x, CardSearchNode<TName>? y)
+        bool IEqualityComparer<CardSearchNode<TCardGroupName>>.Equals(CardSearchNode<TCardGroupName>? x, CardSearchNode<TCardGroupName>? y)
         {
             return GetNodeHashCode(x) == GetNodeHashCode(y);
         }
 
-        int IEqualityComparer<CardSearchNode<TName>>.GetHashCode(CardSearchNode<TName> obj) => GetNodeHashCode(obj);
+        int IEqualityComparer<CardSearchNode<TCardGroupName>>.GetHashCode(CardSearchNode<TCardGroupName> obj) => GetNodeHashCode(obj);
     }
 
-    private HashSet<CardSearchNode<TName>> Nodes { get; }
+    private HashSet<CardSearchNode<TCardGroupName>> Nodes { get; }
 
     public CardSearchNodeCollection()
     {
-        Nodes = new HashSet<CardSearchNode<TName>>(NodeComparer.Instance);
+        Nodes = new HashSet<CardSearchNode<TCardGroupName>>(NodeComparer.Instance);
     }
 
-    public CardSearchNodeCollection<TName> Add(CardSearchNode<TName>? cardSearchNode)
+    public CardSearchNodeCollection<TCardGroupName> Add(CardSearchNode<TCardGroupName>? cardSearchNode)
     {
         var node = cardSearchNode;
 
@@ -122,7 +122,7 @@ public sealed class CardSearchNodeCollection<TName> : IEnumerable<CardSearchNode
         return this;
     }
 
-    public IEnumerable<CardSearchNode<TName>> FindNodes(TName cardName)
+    public IEnumerable<CardSearchNode<TCardGroupName>> FindNodes(TCardGroupName cardName)
     {
         foreach (var graph in Nodes)
         {
@@ -137,22 +137,22 @@ public sealed class CardSearchNodeCollection<TName> : IEnumerable<CardSearchNode
         }
     }
 
-    public bool HasPathBetweenNodes(TName start, TName end)
+    public bool HasPathBetweenNodes(TCardGroupName start, TCardGroupName end)
     {
         return GetPathBetweenNodes(start, end);
     }
 
-    public IReadOnlySet<TName> GetCardsAccessibleFromName(TName start)
+    public IReadOnlySet<TCardGroupName> GetCardsAccessibleFromName(TCardGroupName start)
     {
         var maxDepth = MaxDepth();
-        var destination = new Queue<TName>();
-        var found = new HashSet<TName>();
+        var destination = new Queue<TCardGroupName>();
+        var found = new HashSet<TCardGroupName>();
         destination.Enqueue(start);
 
         for (var depth = 0; depth < maxDepth; depth++)
         {
             // This is gonna be name for depth + 1.
-            var newDestinations = new Queue<TName>();
+            var newDestinations = new Queue<TCardGroupName>();
 
             while (destination.TryDequeue(out var head))
             {
@@ -189,16 +189,16 @@ public sealed class CardSearchNodeCollection<TName> : IEnumerable<CardSearchNode
         return found;
     }
 
-    private bool GetPathBetweenNodes(TName start, TName end)
+    private bool GetPathBetweenNodes(TCardGroupName start, TCardGroupName end)
     {
         var maxDepth = MaxDepth();
-        var destination = new Queue<TName>();
+        var destination = new Queue<TCardGroupName>();
         destination.Enqueue(start);
         
         for(var depth = 0; depth < maxDepth; depth++)
         {
             // This is gonna be name for depth + 1.
-            var newDestinations = new Queue<TName>();
+            var newDestinations = new Queue<TCardGroupName>();
 
             while (destination.TryDequeue(out var head))
             {
@@ -263,9 +263,9 @@ public sealed class CardSearchNodeCollection<TName> : IEnumerable<CardSearchNode
         return maxDepth;
     }
 
-    public IEnumerator<CardSearchNode<TName>> GetEnumerator()
+    public IEnumerator<CardSearchNode<TCardGroupName>> GetEnumerator()
     {
-        IEnumerable<CardSearchNode<TName>> nodes = Nodes;
+        IEnumerable<CardSearchNode<TCardGroupName>> nodes = Nodes;
         return nodes.GetEnumerator();
     }
 

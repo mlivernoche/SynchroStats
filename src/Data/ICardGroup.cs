@@ -1,7 +1,7 @@
 ﻿namespace SynchroStats.Data;
 
-public interface ICardGroup<TName> : INamedCard<TName>
-    where TName : notnull, IEquatable<TName>, IComparable<TName>
+public interface ICardGroup<TCardGroupName> : INamedCard<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
     int Size { get; }
     int Minimum { get; }

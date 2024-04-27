@@ -8,11 +8,11 @@ namespace SynchroStats;
 
 public static class CardList
 {
-    public static CardList<T, U> Create<T, U>(IEnumerable<T> cards)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static CardList<TCardGroup, TCardGroupName> Create<TCardGroup, TCardGroupName>(IEnumerable<TCardGroup> cards)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        return new CardList<T, U>(cards);
+        return new CardList<TCardGroup, TCardGroupName>(cards);
     }
 
     public static CardList<TCardGroup, TCardGroupName> Create<TCardGroup, TCardGroupName>(HandAnalyzer<TCardGroup, TCardGroupName> analyzer)
@@ -22,9 +22,9 @@ public static class CardList
         return new CardList<TCardGroup, TCardGroupName>(analyzer.CardGroups.Values);
     }
 
-    public static CardList<T, U> CheckSize<T, U>(this CardList<T, U> cards, int size)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static CardList<TCardGroup, TCardGroupName> CheckSize<TCardGroup, TCardGroupName>(this CardList<TCardGroup, TCardGroupName> cards, int size)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         var listSize = cards.Sum(static group => group.Size);
         if (size != listSize)
@@ -34,9 +34,9 @@ public static class CardList
         return cards;
     }
 
-    public static CardList<T, U> Change<T, U>(this CardList<T, U> cards, T card)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static CardList<TCardGroup, TCardGroupName> Change<TCardGroup, TCardGroupName>(this CardList<TCardGroup, TCardGroupName> cards, TCardGroup card)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         return cards.Change(card);
     }
@@ -48,18 +48,18 @@ public static class CardList
         return cards.Change(name, change);
     }
 
-    public static CardList<T, U> Remove<T, U>(this CardList<T, U> cards, U card)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static CardList<TCardGroup, TCardGroupName> Remove<TCardGroup, TCardGroupName>(this CardList<TCardGroup, TCardGroupName> cards, TCardGroupName card)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
         return cards.Remove(card);
     }
 
-    public static CardList<T, U> Minus<T, U>(this IEnumerable<T> cards, HandCombination<U> hand, Func<T, int, T> selector)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static CardList<TCardGroup, TCardGroupName> Minus<TCardGroup, TCardGroupName>(this IEnumerable<TCardGroup> cards, HandCombination<TCardGroupName> hand, Func<TCardGroup, int, TCardGroup> selector)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        var dict = new DictionaryWithGeneratedKeys<U, T>(static group => group.Name, cards);
+        var dict = new DictionaryWithGeneratedKeys<TCardGroupName, TCardGroup>(static group => group.Name, cards);
 
         foreach (var cardInHand in hand.CardNames)
         {
@@ -79,14 +79,14 @@ public static class CardList
             }
         }
 
-        return new CardList<T, U>(dict.Values);
+        return new CardList<TCardGroup, TCardGroupName>(dict.Values);
     }
 
-    public static CardList<T, U> RemoveCardFromDeck<T, U>(this IEnumerable<T> cards, U cardInHand, Func<T, int, T> selector)
-        where T : ICardGroup<U>
-        where U : notnull, IEquatable<U>, IComparable<U>
+    public static CardList<TCardGroup, TCardGroupName> RemoveCardFromDeck<TCardGroup, TCardGroupName>(this IEnumerable<TCardGroup> cards, TCardGroupName cardInHand, Func<TCardGroup, int, TCardGroup> selector)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     {
-        var dict = new DictionaryWithGeneratedKeys<U, T>(static group => group.Name, cards);
+        var dict = new DictionaryWithGeneratedKeys<TCardGroupName, TCardGroup>(static group => group.Name, cards);
 
         if (dict.TryGetValue(cardInHand, out var card))
         {
@@ -101,7 +101,7 @@ public static class CardList
             }
         }
 
-        return new CardList<T, U>(dict.Values);
+        return new CardList<TCardGroup, TCardGroupName>(dict.Values);
     }
 
     public static int GetNumberOfCards<TCardGroup, TCardGroupName>(this CardList<TCardGroup, TCardGroupName> cardList)
@@ -119,15 +119,15 @@ public static class CardList
     }
 }
 
-public sealed class CardList<T, U> : IReadOnlyCollection<T>
-    where T : ICardGroup<U>
-    where U : notnull, IEquatable<U>, IComparable<U>
+public sealed class CardList<TCardGroup, TCardGroupName> : IReadOnlyCollection<TCardGroup>
+    where TCardGroup : ICardGroup<TCardGroupName>
+    where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
-    private sealed class Comparer : IEqualityComparer<T>
+    private sealed class Comparer : IEqualityComparer<TCardGroup>
     {
-        public static readonly IEqualityComparer<T> Instance = new Comparer();
+        public static readonly IEqualityComparer<TCardGroup> Instance = new Comparer();
 
-        public bool Equals(T? x, T? y)
+        public bool Equals(TCardGroup? x, TCardGroup? y)
         {
             if (x is null && y is null)
             {
@@ -142,17 +142,17 @@ public sealed class CardList<T, U> : IReadOnlyCollection<T>
             return NameComparer.Instance.Equals(x.Name, y.Name);
         }
 
-        public int GetHashCode([DisallowNull] T obj)
+        public int GetHashCode([DisallowNull] TCardGroup obj)
         {
             return NameComparer.Instance.GetHashCode(obj.Name);
         }
     }
 
-    private sealed class NameComparer : IEqualityComparer<U>
+    private sealed class NameComparer : IEqualityComparer<TCardGroupName>
     {
-        public static readonly IEqualityComparer<U> Instance = new NameComparer();
+        public static readonly IEqualityComparer<TCardGroupName> Instance = new NameComparer();
 
-        public bool Equals(U? x, U? y)
+        public bool Equals(TCardGroupName? x, TCardGroupName? y)
         {
             if(x is null)
             {
@@ -162,27 +162,27 @@ public sealed class CardList<T, U> : IReadOnlyCollection<T>
             return x.Equals(y);
         }
 
-        public int GetHashCode([DisallowNull] U obj)
+        public int GetHashCode([DisallowNull] TCardGroupName obj)
         {
             return obj.GetHashCode();
         }
     }
 
-    private HashSet<T> Cards { get; }
+    private HashSet<TCardGroup> Cards { get; }
 
     public int Count => Cards.Count;
 
-    public IReadOnlyCollection<U> Names { get; }
+    public IReadOnlyCollection<TCardGroupName> Names { get; }
 
-    public CardList(IEnumerable<T> cards)
+    public CardList(IEnumerable<TCardGroup> cards)
     {
-        Cards = new HashSet<T>(cards.Where(static group => group.Size > 0), Comparer.Instance);
+        Cards = new HashSet<TCardGroup>(cards.Where(static group => group.Size > 0), Comparer.Instance);
         Names = Cards.Select(static group => group.Name).ToList();
     }
 
-    internal CardList<T, U> Change(U name, Func<T, T> change)
+    internal CardList<TCardGroup, TCardGroupName> Change(TCardGroupName name, Func<TCardGroup, TCardGroup> change)
     {
-        T? oldCard = default;
+        TCardGroup? oldCard = default;
         foreach(var card in Cards)
         {
             if(card.Name.Equals(name))
@@ -201,9 +201,9 @@ public sealed class CardList<T, U> : IReadOnlyCollection<T>
         return this;
     }
 
-    internal CardList<T, U> Change(T newValue)
+    internal CardList<TCardGroup, TCardGroupName> Change(TCardGroup newValue)
     {
-        var cards = new HashSet<T>(Cards, Comparer.Instance);
+        var cards = new HashSet<TCardGroup>(Cards, Comparer.Instance);
 
         // items are compared by U, so this is removing any old
         // item that have the same U as newValue.
@@ -212,19 +212,19 @@ public sealed class CardList<T, U> : IReadOnlyCollection<T>
         // add the newValue that has the data we want.
         cards.Add(newValue);
 
-        return new CardList<T, U>(cards);
+        return new CardList<TCardGroup, TCardGroupName>(cards);
     }
 
-    internal CardList<T, U> Remove(U cardName)
+    internal CardList<TCardGroup, TCardGroupName> Remove(TCardGroupName cardName)
     {
-        var cards = new HashSet<T>(Cards, Comparer.Instance);
+        var cards = new HashSet<TCardGroup>(Cards);
         cards.RemoveWhere(group => NameComparer.Instance.Equals(group.Name, cardName));
-        return new CardList<T, U>(cards);
+        return new CardList<TCardGroup, TCardGroupName>(Cards);
     }
 
-    public IEnumerator<T> GetEnumerator()
+    public IEnumerator<TCardGroup> GetEnumerator()
     {
-        IEnumerable<T> enumerable = Cards;
+        IEnumerable<TCardGroup> enumerable = Cards;
         return enumerable.GetEnumerator();
     }
 
