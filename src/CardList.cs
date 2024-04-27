@@ -217,9 +217,9 @@ public sealed class CardList<TCardGroup, TCardGroupName> : IReadOnlyCollection<T
 
     internal CardList<TCardGroup, TCardGroupName> Remove(TCardGroupName cardName)
     {
-        var cards = new HashSet<TCardGroup>(Cards);
+        var cards = new HashSet<TCardGroup>(Cards, Comparer.Instance);
         cards.RemoveWhere(group => NameComparer.Instance.Equals(group.Name, cardName));
-        return new CardList<TCardGroup, TCardGroupName>(Cards);
+        return new CardList<TCardGroup, TCardGroupName>(cards);
     }
 
     public IEnumerator<TCardGroup> GetEnumerator()
