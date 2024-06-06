@@ -23,11 +23,16 @@ public class HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>
             .ToList();
     }
 
+    public double CalculateProbability(TAssessment assessment)
+    {
+        return Analyzer.CalculateProbability(assessment.Hand);
+    }
+
     public double CalculateProbability(Func<TAssessment, bool> filter)
     {
         var prob = 0.0;
 
-        foreach(var assessment in Assessments.Where(filter))
+        foreach (var assessment in Assessments.Where(filter))
         {
             prob += Analyzer.CalculateProbability(assessment.Hand);
         }
