@@ -23,11 +23,16 @@ public class HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>
             .ToList();
     }
 
+    public double CalculateProbability(TAssessment assessment)
+    {
+        return Analyzer.CalculateProbability(assessment.Hand);
+    }
+
     public double CalculateProbability(Func<TAssessment, bool> filter)
     {
         var prob = 0.0;
 
-        foreach(var assessment in Assessments.Where(filter))
+        foreach (var assessment in Assessments.Where(filter))
         {
             prob += Analyzer.CalculateProbability(assessment.Hand);
         }
@@ -36,5 +41,26 @@ public class HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>
         Guard.IsLessThanOrEqualTo(prob, 1.0);
 
         return prob;
+    }
+
+    public double CalculateExpectedValue(Func<TAssessment, double> valueFunction)
+    {
+        var expectedValue = 0.0;
+
+        foreach (var assessment in Assessments)
+        {
+            var count = valueFunction(assessment);
+            if(count > 0)
+            {
+                expectedValue += count * Analyzer.CalculateProbability(assessment.Hand);
+            }
+        }
+
+        return expectedValue;
+    }
+
+    public TAggregate Aggregate<TAggregate>(Func<IReadOnlyCollection<TAssessment>, TAggregate> calculator)
+    {
+        return calculator(Assessments);
     }
 }

@@ -120,6 +120,70 @@ public static class HandAnalyzer
     {
         return Calculator.CalculateProbability(handAnalyzer.CardGroups.Values, hand, handAnalyzer.DeckSize, handAnalyzer.HandSize);
     }
+
+    public static double CalculateExpectedValue<TCardGroup, TCardGroupName>(this HandAnalyzer<TCardGroup, TCardGroupName> handAnalyzer, Func<HandCombination<TCardGroupName>, double> valueFunction)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
+    {
+        var expectedValue = 0.0;
+
+        foreach(var hand in handAnalyzer.Combinations)
+        {
+            var value = valueFunction(hand);
+            if(value > 0)
+            {
+                expectedValue += handAnalyzer.CalculateProbability(hand) * value;
+            }
+        }
+
+        return expectedValue;
+    }
+
+    public static double CalculateExpectedValue<TCardGroup, TCardGroupName>(this HandAnalyzer<TCardGroup, TCardGroupName> handAnalyzer, Func<HandAnalyzer<TCardGroup, TCardGroupName>, HandCombination<TCardGroupName>, double> valueFunction)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
+    {
+        var expectedValue = 0.0;
+
+        foreach (var hand in handAnalyzer.Combinations)
+        {
+            var value = valueFunction(handAnalyzer, hand);
+            if (value > 0)
+            {
+                expectedValue += handAnalyzer.CalculateProbability(hand) * value;
+            }
+        }
+
+        return expectedValue;
+    }
+
+    public static double Aggregate<TCardGroup, TCardGroupName, TAggregate>(this HandAnalyzer<TCardGroup, TCardGroupName> handAnalyzer, Func<HandCombination<TCardGroupName>, TAggregate> aggregator, Func<IReadOnlyDictionary<HandCombination<TCardGroupName>, TAggregate>, double> calculator)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
+    {
+        var aggregateValues = new Dictionary<HandCombination<TCardGroupName>, TAggregate>(handAnalyzer.Combinations.Count);
+
+        foreach (var hand in handAnalyzer.Combinations)
+        {
+            aggregateValues[hand] = aggregator(hand);
+        }
+
+        return calculator(aggregateValues);
+    }
+
+    public static double Aggregate<TCardGroup, TCardGroupName, TAggregate>(this HandAnalyzer<TCardGroup, TCardGroupName> handAnalyzer, Func<HandCombination<TCardGroupName>, HandAnalyzer<TCardGroup, TCardGroupName>, TAggregate> aggregator, Func<IReadOnlyDictionary<HandCombination<TCardGroupName>, TAggregate>, double> calculator)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
+    {
+        var aggregateValues = new Dictionary<HandCombination<TCardGroupName>, TAggregate>(handAnalyzer.Combinations.Count);
+
+        foreach (var hand in handAnalyzer.Combinations)
+        {
+            aggregateValues[hand] = aggregator(hand, handAnalyzer);
+        }
+
+        return calculator(aggregateValues);
+    }
 }
 
 public sealed class HandAnalyzer<TCardGroup, TCardGroupName>

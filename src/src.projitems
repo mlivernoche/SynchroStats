@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Data\CardSearch\CardSearchNodeCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ICardGroup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\INamedCard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\Math\StandardDeviation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\CardOps.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\Filters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\Operations\IFilter.cs" />
@@ -26,9 +27,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzerComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\HandAnalyzerComparisonCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Analysis\IHandAnalyzerComparisonCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\AssessmentCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\HandAssessment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\HandAssessmentAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\HandAssessmentComparisonCategory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\HandAssessmentWithAnalyzerComparisonCategory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Assessment\IHandAssessment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombination.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Features\Combinations\HandCombinationFinder.cs" />

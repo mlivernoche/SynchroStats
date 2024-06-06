@@ -24,9 +24,9 @@ internal sealed class NumericalComparisonFormatter<R> : IHandAnalyzerComparisonF
 
         sb.Append(categoryName.PadRight(CategoryNameLength));
 
-        foreach (var result in analyzers.Keys)
+        foreach (var result in analyzers.Values)
         {
-            sb.Append($"{result:N0}".PadRight(ValueLength));
+            sb.Append($"{result:N2}".PadRight(ValueLength));
         }
 
         return sb.ToString();
