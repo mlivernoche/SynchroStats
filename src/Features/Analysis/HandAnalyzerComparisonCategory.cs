@@ -38,7 +38,7 @@ public static class HandAnalyzerComparisonCategory
     }
 }
 
-public abstract class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName> : IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
+internal abstract class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName> : IHandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
     where TCardGroup : ICardGroup<TCardGroupName>
     where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
@@ -64,7 +64,7 @@ public abstract class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
     }
 }
 
-public sealed class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName, TReturn> : HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
+internal sealed class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName, TReturn> : HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
     where TCardGroup : ICardGroup<TCardGroupName>
     where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {
@@ -81,7 +81,7 @@ public sealed class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName, T
     public override string Run(IEnumerable<HandAnalyzer<TCardGroup, TCardGroupName>> analyzers) => Formatter.FormatData(Name, Run(analyzers, Function));
 }
 
-public sealed class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName, TArgs, TReturn> : HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
+internal sealed class HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName, TArgs, TReturn> : HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
     where TCardGroup : ICardGroup<TCardGroupName>
     where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
 {

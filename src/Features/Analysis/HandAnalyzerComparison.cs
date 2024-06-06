@@ -105,7 +105,7 @@ public class HandAnalyzerComparison<TCardGroup, TCardGroupName> : IEnumerable<IH
             sb.AppendLine(handAnalyzerNamesFormatter.FormatData("Category", names));
         }
 
-        foreach (var category in output.OrderBy(static x => x.sortId).Select(static x => x.category))
+        foreach (var category in output.OrderBy(static x => x.sortId).Select(static x => x.category).ToList())
         {
             sb.AppendLine(category);
         }

@@ -134,7 +134,6 @@ public static class Filters
     public static int CountCopiesOfCardInHand<U>(this HandCombination<U> cards, U cardName)
         where U : notnull, IEquatable<U>, IComparable<U>
     {
-        
         foreach(var card in cards.CardNames)
         {
             if(!card.HandName.Equals(cardName))

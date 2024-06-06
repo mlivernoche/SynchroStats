@@ -5,17 +5,17 @@ using SynchroStats.Formatting;
 
 namespace SynchroStats.Features.Assessment;
 
-internal sealed class HandAssessmentComparisonCategory<TCardGroup, TCardGroupName, TReturn, TAssessment> : HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
+internal sealed class HandAssessmentWithAnalyzerComparisonCategory<TCardGroup, TCardGroupName, TReturn, TAssessment> : HandAnalyzerComparisonCategory<TCardGroup, TCardGroupName>
     where TCardGroup : ICardGroup<TCardGroupName>
     where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
     where TAssessment : IHandAssessment<TCardGroupName>
 {
     private AssessmentCache<TCardGroup, TCardGroupName, TAssessment> Cache { get; }
-    private Func<HandCombination<TCardGroupName>, TAssessment> AssessmentFactory { get; }
+    private Func<HandCombination<TCardGroupName>, HandAnalyzer<TCardGroup, TCardGroupName>, TAssessment> AssessmentFactory { get; }
     private Func<HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>, TReturn> Function { get; }
     private IHandAnalyzerComparisonFormatter<TReturn> Formatter { get; }
 
-    public HandAssessmentComparisonCategory(string name, IHandAnalyzerComparisonFormatter<TReturn> formatter, Func<HandCombination<TCardGroupName>, TAssessment> assessmentFactory, Func<HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>, TReturn> func, AssessmentCache<TCardGroup, TCardGroupName, TAssessment> cache)
+    public HandAssessmentWithAnalyzerComparisonCategory(string name, IHandAnalyzerComparisonFormatter<TReturn> formatter, Func<HandCombination<TCardGroupName>, HandAnalyzer<TCardGroup, TCardGroupName>, TAssessment> assessmentFactory, Func<HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>, TReturn> func, AssessmentCache<TCardGroup, TCardGroupName, TAssessment> cache)
         : base(name)
     {
         Cache = cache;
