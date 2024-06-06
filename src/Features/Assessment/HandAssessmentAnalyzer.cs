@@ -58,4 +58,9 @@ public class HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>
 
         return expectedValue;
     }
+
+    public TAggregate Aggregate<TAggregate>(Func<IReadOnlyCollection<TAssessment>, TAggregate> calculator)
+    {
+        return calculator(Assessments);
+    }
 }
