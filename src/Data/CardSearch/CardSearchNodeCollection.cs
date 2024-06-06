@@ -257,7 +257,7 @@ public sealed class CardSearchNodeCollection<TCardGroupName> : IEnumerable<CardS
                 node = node.Next;
             }
 
-            maxDepth = Math.Max(maxDepth, depth);
+            maxDepth = System.Math.Max(maxDepth, depth);
         }
 
         return maxDepth;
