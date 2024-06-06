@@ -37,4 +37,20 @@ public class HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment>
 
         return prob;
     }
+
+    public double CalculateExpectedValue(Func<TAssessment, double> valueFunction)
+    {
+        var expectedValue = 0.0;
+
+        foreach (var assessment in Assessments)
+        {
+            var count = valueFunction(assessment);
+            if(count > 0)
+            {
+                expectedValue += count * Analyzer.CalculateProbability(assessment.Hand);
+            }
+        }
+
+        return expectedValue;
+    }
 }
