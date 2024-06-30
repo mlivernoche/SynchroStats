@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace CardSourceGenerator
 {
-    public sealed class YGOProCard : IYGOCard
+    internal sealed class YGOProCard : IYGOCard
     {
         public string Name { get; set; } = string.Empty;
         public int AttackPoints { get; set; } = -1;

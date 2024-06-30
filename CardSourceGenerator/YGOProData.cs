@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace CardSourceGenerator
 {
-    public sealed class YGOProData
+    internal sealed class YGOProData
     {
         public IReadOnlyList<IYGOCard> Data { get; } = Array.Empty<IYGOCard>();
 
