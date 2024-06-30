@@ -48,4 +48,27 @@ public static class StandardDeviation
 
         return System.Math.Sqrt(total / count);
     }
+
+    public static double CalculateCoverageProbability<TCardGroup, TCardGroupName, TAssessment>(this HandAssessmentAnalyzer<TCardGroup, TCardGroupName, TAssessment> analyzer, Func<TAssessment, double> selector, double numberOfStandardDeviations)
+        where TCardGroup : ICardGroup<TCardGroupName>
+        where TCardGroupName : notnull, IEquatable<TCardGroupName>, IComparable<TCardGroupName>
+        where TAssessment : IHandAssessment<TCardGroupName>
+    {
+        var std = analyzer.CalculateStandardDeviation(selector) * numberOfStandardDeviations;
+        var ev = analyzer.CalculateExpectedValue(selector);
+        var belowEV = ev - std;
+        var aboveEV = ev + std;
+        var prob = 0.0;
+
+        foreach (var assessment in analyzer.Assessments)
+        {
+            var value = selector(assessment);
+            if (value > belowEV && value < aboveEV)
+            {
+                prob += analyzer.CalculateProbability(assessment);
+            }
+        }
+
+        return prob;
+    }
 }
