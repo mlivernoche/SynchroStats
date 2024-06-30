@@ -59,7 +59,7 @@ namespace CardSourceGenerator
         {
             var cards = new HashSet<IYGOCard>();
             var filesRead = new List<string>();
-            foreach (var file in context.AdditionalFiles.Where(text => text.Path.EndsWith(".json")))
+            foreach (var file in context.AdditionalFiles.Where(text => Path.GetExtension(text.Path).Equals(".json")))
             {
                 if (file.GetText() is SourceText text)
                 {
@@ -86,109 +86,6 @@ namespace {nameof(CardSourceGenerator)}
 {{
     public static partial class {YGOCards}
     {{
-        public interface IYGOCard
-        {{
-            {YGOCards}.{YGOCardName} Name {{ get; }}
-            int? Level {{ get; }}
-            int? AttackPoints {{ get; }}
-            int? DefensePoints {{ get; }}
-            string? MonsterType {{ get; }}
-            string? MonsterAttribute {{ get; }}
-        }}
-
-        private sealed class YGOProCard : IYGOCard
-        {{
-            public {YGOCards}.{YGOCardName} Name {{ get; }}
-            public int? Level {{ get; }}
-            public int? AttackPoints {{ get; }}
-            public int? DefensePoints {{ get; }}
-            public string? MonsterType {{ get; }}
-            public string? MonsterAttribute {{ get; }}
-
-            public YGOProCard(JsonElement element)
-            {{
-                {{
-                    if (!element.TryGetProperty(""name"", out var el))
-                    {{
-                        throw new Exception(""name not found"");
-                    }}
-
-                    var name = el.GetString() ?? throw new Exception(""name not a string"");
-
-                    if(!{YGOCards}.CardNameMap.TryGetValue(name, out var cardName))
-                    {{
-                        throw new Exception(""{YGOCardName} not found"");
-                    }}
-
-                    Name = cardName;
-                }}
-
-                {{
-                    if (element.TryGetProperty(""level"", out var el))
-                    {{
-                        Level = el.GetInt32();
-                    }}
-                }}
-
-                {{
-                    if (element.TryGetProperty(""atk"", out var el))
-                    {{
-                        AttackPoints = el.GetInt32();
-                    }}
-                }}
-
-                {{
-                    if (element.TryGetProperty(""def"", out var el))
-                    {{
-                        DefensePoints = el.GetInt32();
-                    }}
-
-                }}
-
-                {{
-                    if (element.TryGetProperty(""race"", out var el))
-                    {{
-                        MonsterType = el.GetString() ?? throw new Exception(""type not a string"");
-                    }}
-                }}
-
-                {{
-                    if (element.TryGetProperty(""attribute"", out var el))
-                    {{
-                        MonsterAttribute = el.GetString() ?? throw new Exception(""attribute not a string"");
-                    }}
-                }}
-            }}
-        }}
-
-        private sealed class YGOProData
-        {{
-            public IReadOnlyList<IYGOCard> Data {{ get; }} = Array.Empty<IYGOCard>();
-
-            public YGOProData(JsonElement element)
-            {{
-                var list = new List<IYGOCard>();
-                Data = list;
-
-                if (!element.TryGetProperty(""data"", out var el))
-                {{
-                    throw new Exception(""data not found"");
-                }}
-
-                foreach (var obj in el.EnumerateArray())
-                {{
-                    list.Add(new YGOProCard(obj));
-                }}
-            }}
-        }}
-
-        public static IReadOnlyList<IYGOCard> LoadCardDataFromYgoPro(string path)
-        {{
-            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            using var document = JsonDocument.Parse(stream);
-            return new YGOProData(document.RootElement).Data;
-        }}
-
         public static IReadOnlyList<string> Paths {{ get; }} = new List<string>()
         {{");
 
